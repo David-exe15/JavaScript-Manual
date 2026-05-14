@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Manual — From Zero to Hero</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0e14;
+    --surface: #13151f;
+    --surface2: #1a1d2e;
+    --border: #252840;
+    --accent: #f7c948;
+    --accent2: #ff6b6b;
+    --accent3: #4ecdc4;
+    --accent4: #a78bfa;
+    --text: #e8eaf0;
+    --text-muted: #7c82a0;
+    --text-dim: #4a4f6a;
+    --code-bg: #0a0c14;
+    --green: #69db7c;
+    --sidebar-w: 280px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s ease;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo .logo-mark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-badge {
+    background: var(--accent);
+    color: #0c0e14;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-subtitle {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    padding: 12px 24px 6px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    transition: all .15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  .nav-link:hover { color: var(--text); background: rgba(247,201,72,.04); }
+  .nav-link.active { color: var(--accent); border-left-color: var(--accent); background: rgba(247,201,72,.06); }
+
+  .nav-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    min-width: 20px;
+  }
+
+  /* ── MAIN ── */
+  #main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 72px 72px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'JS';
+    position: absolute;
+    right: -20px; top: -40px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 320px;
+    color: rgba(247,201,72,.03);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+  }
+
+  .hero-desc {
+    max-width: 600px;
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 36px;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 860px;
+    padding: 0 72px 120px;
+  }
+
+  /* ── CHAPTER ── */
+  .chapter {
+    padding: 72px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chapter:last-child { border-bottom: none; }
+
+  .chapter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .chapter h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .chapter-intro {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 680px;
+    margin-bottom: 40px;
+    font-style: italic;
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text);
+    margin: 40px 0 14px;
+    letter-spacing: -0.5px;
+  }
+
+  p { color: var(--text-muted); margin-bottom: 16px; line-height: 1.85; }
+
+  strong { color: var(--text); font-weight: 700; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 24px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  pre {
+    padding: 22px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* Syntax colors */
+  .kw { color: #ff6b6b; font-weight: 700; } /* keywords */
+  .fn { color: #f7c948; } /* functions */
+  .str { color: #69db7c; } /* strings */
+  .num { color: #a78bfa; } /* numbers */
+  .cm { color: #4a4f6a; font-style: italic; } /* comments */
+  .op { color: #4ecdc4; } /* operators */
+  .var { color: #e8eaf0; } /* variables */
+  .bool { color: #ff6b6b; } /* booleans */
+  .prop { color: #4ecdc4; } /* properties */
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 24px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-body strong { display: block; margin-bottom: 4px; font-size: 14px; }
+  .callout-body p { margin: 0; font-size: 14px; }
+
+  .callout.info { background: rgba(78,205,196,.08); border: 1px solid rgba(78,205,196,.2); }
+  .callout.info strong { color: var(--accent3); }
+
+  .callout.warn { background: rgba(247,201,72,.07); border: 1px solid rgba(247,201,72,.2); }
+  .callout.warn strong { color: var(--accent); }
+
+  .callout.tip { background: rgba(105,219,124,.07); border: 1px solid rgba(105,219,124,.2); }
+  .callout.tip strong { color: var(--green); }
+
+  .callout.danger { background: rgba(255,107,107,.07); border: 1px solid rgba(255,107,107,.2); }
+  .callout.danger strong { color: var(--accent2); }
+
+  /* ── EXERCISE ── */
+  .exercise {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 32px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .exercise::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent4);
+  }
+
+  .exercise-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent4);
+    margin-bottom: 10px;
+  }
+
+  .exercise h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .exercise p { font-size: 14px; margin-bottom: 10px; }
+
+  .exercise ol, .exercise ul {
+    padding-left: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .exercise li { margin-bottom: 6px; }
+
+  .exercise .hint {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(167,139,250,.06);
+    border: 1px solid rgba(167,139,250,.15);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .exercise .hint strong { color: var(--accent4); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: 1px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+
+  td code, p code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+  }
+
+  /* ── TAGS ── */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 2px;
+  }
+
+  .tag-beginner { background: rgba(105,219,124,.12); color: var(--green); border: 1px solid rgba(105,219,124,.25); }
+  .tag-intermediate { background: rgba(247,201,72,.12); color: var(--accent); border: 1px solid rgba(247,201,72,.25); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .progress-label { width: 140px; color: var(--text-muted); }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  /* ── CONCEPT GRID ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .concept-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .concept-icon { font-size: 22px; margin-bottom: 10px; }
+
+  .concept-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .concept-card p {
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.5;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: .3s;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 99;
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: var(--sidebar-w); right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 50;
+    transition: transform .05s linear;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 280px; }
+
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+
+    #main { margin-left: 0; }
+    #scroll-progress { left: 0; }
+
+    .hero { padding: 60px 24px 48px; }
+    .content { padding: 0 24px 80px; }
+
+    .hamburger { display: flex; }
+    .overlay.visible { display: block; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chapter { animation: fadeUp .5s ease both; }
+
+  /* ── BACK TO TOP ── */
+  #back-top {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: var(--accent);
+    color: #0c0e14;
+    border: none;
+    border-radius: 50%;
+    width: 44px; height: 44px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .3s, transform .3s;
+    z-index: 50;
+  }
+
+  #back-top.visible { opacity: 1; transform: translateY(0); }
+  #back-top:hover { background: #ffe066; }
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- Hamburger -->
+<button class="hamburger" id="hamburger" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <span class="logo-badge">JS</span>
+      Manual
+    </div>
+    <div class="sidebar-subtitle">// beginner → intermediate</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Introduction</div>
+    <a href="#intro" class="nav-link active"><span class="nav-num">00</span> Overview</a>
+
+    <div class="nav-section-label">Core Concepts</div>
+    <a href="#chapter-1" class="nav-link"><span class="nav-num">01</span> Variables & Types</a>
+    <a href="#chapter-2" class="nav-link"><span class="nav-num">02</span> Operators</a>
+    <a href="#chapter-3" class="nav-link"><span class="nav-num">03</span> Control Flow</a>
+    <a href="#chapter-4" class="nav-link"><span class="nav-num">04</span> Functions</a>
+    <a href="#chapter-5" class="nav-link"><span class="nav-num">05</span> Arrays</a>
+    <a href="#chapter-6" class="nav-link"><span class="nav-num">06</span> Objects</a>
+
+    <div class="nav-section-label">Intermediate</div>
+    <a href="#chapter-7" class="nav-link"><span class="nav-num">07</span> Scope & Closures</a>
+    <a href="#chapter-8" class="nav-link"><span class="nav-num">08</span> Higher-Order Functions</a>
+    <a href="#chapter-9" class="nav-link"><span class="nav-num">09</span> DOM Manipulation</a>
+    <a href="#chapter-10" class="nav-link"><span class="nav-num">10</span> Async JavaScript</a>
+    <a href="#chapter-11" class="nav-link"><span class="nav-num">11</span> ES6+ Features</a>
+    <a href="#chapter-12" class="nav-link"><span class="nav-num">12</span> Error Handling</a>
+
+    <div class="nav-section-label">Bonus Chapters</div>
+    <a href="#chapter-13" class="nav-link"><span class="nav-num">13</span> Prototypes & this</a>
+    <a href="#chapter-14" class="nav-link"><span class="nav-num">14</span> Regular Expressions</a>
+    <a href="#chapter-15" class="nav-link"><span class="nav-num">15</span> LocalStorage & JSON</a>
+    <a href="#chapter-16" class="nav-link"><span class="nav-num">16</span> Modules & Tooling</a>
+    <a href="#chapter-17" class="nav-link"><span class="nav-num">17</span> Debugging Tips</a>
+    <a href="#chapter-18" class="nav-link"><span class="nav-num">18</span> Mini Projects</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero" id="intro">
+    <div class="hero-eyebrow">// The Complete Reference</div>
+    <h1>Master<br><em>JavaScript</em><br>From Ground Up</h1>
+    <p class="hero-desc">A hands-on manual covering every core concept of JavaScript — from your very first variable to closures, async programming, and the DOM.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">18</span><span class="stat-label">Chapters</span></div>
+      <div class="stat"><span class="stat-num">65+</span><span class="stat-label">Code Examples</span></div>
+      <div class="stat"><span class="stat-num">36</span><span class="stat-label">Exercises</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Mini Projects</span></div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ── CHAPTER 1: VARIABLES ── -->
+    <section class="chapter" id="chapter-1">
+      <div class="chapter-label">Chapter 01</div>
+      <h2>Variables &amp; Data Types</h2>
+      <p class="chapter-intro">Variables are named containers that store data. In JavaScript, you declare them with <code>var</code>, <code>let</code>, or <code>const</code> — each with different rules.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>Declaring Variables</h3>
+      <p>Modern JavaScript uses <strong>let</strong> for values that change, and <strong>const</strong> for values that stay fixed. Avoid <code>var</code> in new code — it has confusing scoping rules.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — variable declarations</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// const — value cannot be reassigned</span>
+<span class="kw">const</span> <span class="var">name</span> <span class="op">=</span> <span class="str">"Alice"</span>;
+<span class="kw">const</span> <span class="var">PI</span> <span class="op">=</span> <span class="num">3.14159</span>;
+
+<span class="cm">// let — value can change</span>
+<span class="kw">let</span> <span class="var">score</span> <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">let</span> <span class="var">isLoggedIn</span> <span class="op">=</span> <span class="bool">false</span>;
+
+score <span class="op">=</span> <span class="num">42</span>;   <span class="cm">// ✓ allowed with let</span>
+<span class="cm">// name = "Bob"; ← ✗ TypeError: const cannot be reassigned</span></pre>
+      </div>
+
+      <h3>The 7 Primitive Data Types</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Example</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>String</code></td><td><code>"hello"</code>, <code>'world'</code></td><td>Text wrapped in quotes</td></tr>
+            <tr><td><code>Number</code></td><td><code>42</code>, <code>3.14</code>, <code>-7</code></td><td>Integers and floats are the same type</td></tr>
+            <tr><td><code>Boolean</code></td><td><code>true</code>, <code>false</code></td><td>Only two possible values</td></tr>
+            <tr><td><code>undefined</code></td><td><code>let x;</code></td><td>Variable declared but not assigned</td></tr>
+            <tr><td><code>null</code></td><td><code>let val = null;</code></td><td>Intentional absence of value</td></tr>
+            <tr><td><code>BigInt</code></td><td><code>9007199254740991n</code></td><td>Very large integers</td></tr>
+            <tr><td><code>Symbol</code></td><td><code>Symbol("id")</code></td><td>Unique identifiers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — typeof operator</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="fn">typeof</span> <span class="str">"hello"</span>     <span class="cm">// → "string"</span>
+<span class="fn">typeof</span> <span class="num">42</span>          <span class="cm">// → "number"</span>
+<span class="fn">typeof</span> <span class="bool">true</span>        <span class="cm">// → "boolean"</span>
+<span class="fn">typeof</span> <span class="kw">undefined</span>   <span class="cm">// → "undefined"</span>
+<span class="fn">typeof</span> <span class="kw">null</span>        <span class="cm">// → "object"  ← famous JS quirk!</span>
+<span class="fn">typeof</span> {}          <span class="cm">// → "object"</span>
+<span class="fn">typeof</span> []          <span class="cm">// → "object"</span>
+<span class="fn">typeof</span> <span class="fn">function</span>(){} <span class="cm">// → "function"</span></pre>
+      </div>
+
+      <h3>String Methods</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — string manipulation</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">msg</span> <span class="op">=</span> <span class="str">"Hello, World!"</span>;
+
+msg.<span class="fn">length</span>               <span class="cm">// → 13</span>
+msg.<span class="fn">toUpperCase</span>()        <span class="cm">// → "HELLO, WORLD!"</span>
+msg.<span class="fn">toLowerCase</span>()        <span class="cm">// → "hello, world!"</span>
+msg.<span class="fn">includes</span>(<span class="str">"World"</span>)    <span class="cm">// → true</span>
+msg.<span class="fn">replace</span>(<span class="str">"World"</span>, <span class="str">"JS"</span>) <span class="cm">// → "Hello, JS!"</span>
+msg.<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">5</span>)          <span class="cm">// → "Hello"</span>
+msg.<span class="fn">split</span>(<span class="str">", "</span>)          <span class="cm">// → ["Hello", "World!"]</span>
+msg.<span class="fn">trim</span>()               <span class="cm">// removes whitespace from both ends</span>
+
+<span class="cm">// Template literals — use backticks</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="str">"Alice"</span>;
+<span class="kw">const</span> <span class="var">greeting</span> <span class="op">=</span> <span class="str">`Hello, <span class="op">${</span><span class="var">user</span><span class="op">}</span>! You have <span class="op">${</span><span class="num">3</span> <span class="op">+</span> <span class="num">2</span><span class="op">}</span> messages.`</span>;
+<span class="cm">// → "Hello, Alice! You have 5 messages."</span></pre>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>Template Literals</strong>
+          <p>Always prefer template literals (backticks) over string concatenation with <code>+</code>. They're more readable and support multi-line strings naturally.</p>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 1.1</div>
+        <h4>Data Type Explorer</h4>
+        <p>Create variables for the following and log the value and type of each:</p>
+        <ol>
+          <li>Your full name as a string</li>
+          <li>Your age as a number</li>
+          <li>Whether you like JavaScript (boolean)</li>
+          <li>A variable declared but not yet assigned</li>
+          <li>A template literal that combines name + age into a sentence</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Use <code>console.log(typeof variableName)</code> to print the type.</div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 1.2</div>
+        <h4>String Transformer</h4>
+        <p>Given <code>const sentence = "  the quick brown fox  ";</code> write code to:</p>
+        <ol>
+          <li>Remove leading/trailing spaces</li>
+          <li>Convert it to title case (first letter of each word capitalized)</li>
+          <li>Count the number of words</li>
+          <li>Check if "fox" appears in the sentence</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Chain methods: <code>trim()</code>, <code>split(" ")</code>, <code>map()</code>, then <code>join(" ")</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 2: OPERATORS ── -->
+    <section class="chapter" id="chapter-2">
+      <div class="chapter-label">Chapter 02</div>
+      <h2>Operators</h2>
+      <p class="chapter-intro">Operators perform actions on values. JavaScript has arithmetic, comparison, logical, and assignment operators — each with important subtleties.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>Arithmetic Operators</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — arithmetic</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="num">10</span> <span class="op">+</span> <span class="num">3</span>   <span class="cm">// → 13  (addition)</span>
+<span class="num">10</span> <span class="op">-</span> <span class="num">3</span>   <span class="cm">// → 7   (subtraction)</span>
+<span class="num">10</span> <span class="op">*</span> <span class="num">3</span>   <span class="cm">// → 30  (multiplication)</span>
+<span class="num">10</span> <span class="op">/</span> <span class="num">3</span>   <span class="cm">// → 3.333... (division)</span>
+<span class="num">10</span> <span class="op">%</span> <span class="num">3</span>   <span class="cm">// → 1   (modulo — remainder)</span>
+<span class="num">2</span>  <span class="op">**</span> <span class="num">8</span>  <span class="cm">// → 256 (exponentiation)</span>
+
+<span class="kw">let</span> <span class="var">x</span> <span class="op">=</span> <span class="num">5</span>;
+x<span class="op">++</span>;  <span class="cm">// x becomes 6 (post-increment)</span>
+x<span class="op">--</span>;  <span class="cm">// x becomes 5 (post-decrement)</span>
+<span class="op">++</span>x;  <span class="cm">// increment BEFORE returning value</span></pre>
+      </div>
+
+      <h3>Comparison Operators & Type Coercion</h3>
+      <div class="callout danger">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">
+          <strong>Always use === not ==</strong>
+          <p>The <code>==</code> operator does type coercion (converts types before comparing), which causes surprising bugs. Always use <code>===</code> (strict equality) which checks both value AND type.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — equality trap</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// == (loose equality) — AVOID</span>
+<span class="num">0</span>   <span class="op">==</span>  <span class="bool">false</span>  <span class="cm">// → true  🤔</span>
+<span class="str">""</span>  <span class="op">==</span>  <span class="bool">false</span>  <span class="cm">// → true  🤔</span>
+<span class="num">1</span>   <span class="op">==</span>  <span class="str">"1"</span>    <span class="cm">// → true  🤔</span>
+<span class="kw">null</span> <span class="op">==</span> <span class="kw">undefined</span> <span class="cm">// → true 🤔</span>
+
+<span class="cm">// === (strict equality) — USE THIS</span>
+<span class="num">0</span>   <span class="op">===</span> <span class="bool">false</span>  <span class="cm">// → false ✓</span>
+<span class="str">""</span>  <span class="op">===</span> <span class="bool">false</span>  <span class="cm">// → false ✓</span>
+<span class="num">1</span>   <span class="op">===</span> <span class="str">"1"</span>    <span class="cm">// → false ✓</span>
+
+<span class="cm">// Other comparisons</span>
+<span class="num">5</span> <span class="op">></span>  <span class="num">3</span>   <span class="cm">// → true</span>
+<span class="num">5</span> <span class="op">>=</span> <span class="num">5</span>   <span class="cm">// → true</span>
+<span class="num">2</span> <span class="op">!==</span> <span class="num">3</span>   <span class="cm">// → true (strict inequality)</span></pre>
+      </div>
+
+      <h3>Logical Operators</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — logical operators</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// AND (&&) — both must be true</span>
+<span class="bool">true</span> <span class="op">&&</span> <span class="bool">true</span>   <span class="cm">// → true</span>
+<span class="bool">true</span> <span class="op">&&</span> <span class="bool">false</span>  <span class="cm">// → false</span>
+
+<span class="cm">// OR (||) — at least one must be true</span>
+<span class="bool">false</span> <span class="op">||</span> <span class="bool">true</span>  <span class="cm">// → true</span>
+<span class="bool">false</span> <span class="op">||</span> <span class="bool">false</span> <span class="cm">// → false</span>
+
+<span class="cm">// NOT (!) — inverts the value</span>
+<span class="op">!</span><span class="bool">true</span>          <span class="cm">// → false</span>
+<span class="op">!</span><span class="bool">false</span>         <span class="cm">// → true</span>
+
+<span class="cm">// Nullish coalescing ?? — fallback for null/undefined</span>
+<span class="kw">const</span> <span class="var">username</span> <span class="op">=</span> <span class="kw">null</span> <span class="op">??</span> <span class="str">"Guest"</span>;  <span class="cm">// → "Guest"</span>
+<span class="kw">const</span> <span class="var">port</span>     <span class="op">=</span> <span class="kw">undefined</span> <span class="op">??</span> <span class="num">3000</span>; <span class="cm">// → 3000</span>
+
+<span class="cm">// Optional chaining ?. — safe property access</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">null</span>;
+<span class="var">user</span><span class="op">?.</span><span class="prop">name</span>      <span class="cm">// → undefined (no crash!)</span>
+<span class="var">user</span>.<span class="prop">name</span>       <span class="cm">// → TypeError 💥</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 2.1</div>
+        <h4>Password Validator</h4>
+        <p>Write code that checks if a password is "strong". It must:</p>
+        <ol>
+          <li>Be at least 8 characters long</li>
+          <li>Contain at least one uppercase letter</li>
+          <li>Not be equal to "password123" (case-insensitive)</li>
+        </ol>
+        <p>Log <code>true</code> if it passes all conditions, <code>false</code> otherwise.</p>
+        <div class="hint"><strong>Hint →</strong> Use <code>&&</code> to combine conditions. <code>password.toLowerCase() !== "password123"</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 3: CONTROL FLOW ── -->
+    <section class="chapter" id="chapter-3">
+      <div class="chapter-label">Chapter 03</div>
+      <h2>Control Flow</h2>
+      <p class="chapter-intro">Control flow lets your program make decisions and repeat tasks. The building blocks are <strong>if/else</strong>, <strong>switch</strong>, and <strong>loops</strong>.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>if / else if / else</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — branching logic</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">score</span> <span class="op">=</span> <span class="num">78</span>;
+
+<span class="kw">if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">90</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"A — Excellent!"</span>);
+} <span class="kw">else if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">80</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"B — Good job"</span>);
+} <span class="kw">else if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">70</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"C — Passing"</span>);   <span class="cm">// ← this runs</span>
+} <span class="kw">else</span> {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"F — Try again"</span>);
+}
+
+<span class="cm">// Ternary operator — compact if/else for one value</span>
+<span class="kw">const</span> <span class="var">status</span> <span class="op">=</span> <span class="var">score</span> <span class="op">>=</span> <span class="num">60</span> <span class="op">?</span> <span class="str">"Pass"</span> <span class="op">:</span> <span class="str">"Fail"</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="var">status</span>); <span class="cm">// → "Pass"</span></pre>
+      </div>
+
+      <h3>switch Statement</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — switch</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">day</span> <span class="op">=</span> <span class="str">"Monday"</span>;
+
+<span class="kw">switch</span> (<span class="var">day</span>) {
+  <span class="kw">case</span> <span class="str">"Monday"</span>:
+  <span class="kw">case</span> <span class="str">"Tuesday"</span>:
+  <span class="kw">case</span> <span class="str">"Wednesday"</span>:
+  <span class="kw">case</span> <span class="str">"Thursday"</span>:
+  <span class="kw">case</span> <span class="str">"Friday"</span>:
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Weekday — work time"</span>);
+    <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="str">"Saturday"</span>:
+  <span class="kw">case</span> <span class="str">"Sunday"</span>:
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Weekend — relax!"</span>);
+    <span class="kw">break</span>;
+  <span class="kw">default</span>:
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Unknown day"</span>);
+}</pre>
+      </div>
+
+      <h3>Loops</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — for, while, for...of</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Classic for loop</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">i</span> <span class="op"><</span> <span class="num">5</span>; <span class="var">i</span><span class="op">++</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">i</span>); <span class="cm">// 0, 1, 2, 3, 4</span>
+}
+
+<span class="cm">// while loop</span>
+<span class="kw">let</span> <span class="var">count</span> <span class="op">=</span> <span class="num">10</span>;
+<span class="kw">while</span> (<span class="var">count</span> <span class="op">></span> <span class="num">0</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">count</span>);
+  <span class="var">count</span> <span class="op">-=</span> <span class="num">2</span>;
+}
+
+<span class="cm">// for...of — iterate over array values</span>
+<span class="kw">const</span> <span class="var">fruits</span> <span class="op">=</span> [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>];
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">fruit</span> <span class="kw">of</span> <span class="var">fruits</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">fruit</span>);
+}
+
+<span class="cm">// for...in — iterate over object keys</span>
+<span class="kw">const</span> <span class="var">person</span> <span class="op">=</span> { <span class="prop">name</span>: <span class="str">"Bob"</span>, <span class="prop">age</span>: <span class="num">30</span> };
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">key</span> <span class="kw">in</span> <span class="var">person</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">key</span>, <span class="var">person</span>[<span class="var">key</span>]);
+}
+
+<span class="cm">// break and continue</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">i</span> <span class="op"><</span> <span class="num">10</span>; <span class="var">i</span><span class="op">++</span>) {
+  <span class="kw">if</span> (<span class="var">i</span> <span class="op">===</span> <span class="num">3</span>) <span class="kw">continue</span>; <span class="cm">// skip 3</span>
+  <span class="kw">if</span> (<span class="var">i</span> <span class="op">===</span> <span class="num">7</span>) <span class="kw">break</span>;    <span class="cm">// stop at 7</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">i</span>);         <span class="cm">// 0,1,2,4,5,6</span>
+}</pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 3.1</div>
+        <h4>FizzBuzz Classic</h4>
+        <p>Loop from 1 to 100. For each number:</p>
+        <ol>
+          <li>Print "Fizz" if divisible by 3</li>
+          <li>Print "Buzz" if divisible by 5</li>
+          <li>Print "FizzBuzz" if divisible by both</li>
+          <li>Otherwise print the number itself</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Check divisibility with the modulo operator <code>%</code>. Check FizzBuzz first!</div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 3.2</div>
+        <h4>Multiplication Table</h4>
+        <p>Use nested loops to print a 5×5 multiplication table to the console.</p>
+        <div class="hint"><strong>Hint →</strong> Outer loop for rows (1–5), inner loop for columns (1–5). Use template literals to format: <code>`${i} × ${j} = ${i*j}`</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 4: FUNCTIONS ── -->
+    <section class="chapter" id="chapter-4">
+      <div class="chapter-label">Chapter 04</div>
+      <h2>Functions</h2>
+      <p class="chapter-intro">Functions are reusable blocks of code. They are first-class citizens in JavaScript — you can assign them to variables, pass them as arguments, and return them from other functions.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>Function Declaration vs Expression vs Arrow</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — 3 ways to define functions</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// 1. Function Declaration — hoisted (can call before definition)</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="var">name</span>) {
+  <span class="kw">return</span> <span class="str">`Hello, <span class="op">${</span><span class="var">name</span><span class="op">}</span>!`</span>;
+}
+
+<span class="cm">// 2. Function Expression — assigned to a variable</span>
+<span class="kw">const</span> <span class="fn">square</span> <span class="op">=</span> <span class="kw">function</span>(<span class="var">x</span>) {
+  <span class="kw">return</span> <span class="var">x</span> <span class="op">*</span> <span class="var">x</span>;
+};
+
+<span class="cm">// 3. Arrow Function — concise, modern syntax</span>
+<span class="kw">const</span> <span class="fn">add</span> <span class="op">=</span> (<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> <span class="var">a</span> <span class="op">+</span> <span class="var">b</span>;  <span class="cm">// implicit return</span>
+
+<span class="kw">const</span> <span class="fn">multiply</span> <span class="op">=</span> (<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> {   <span class="cm">// explicit return needed with braces</span>
+  <span class="kw">const</span> <span class="var">result</span> <span class="op">=</span> <span class="var">a</span> <span class="op">*</span> <span class="var">b</span>;
+  <span class="kw">return</span> <span class="var">result</span>;
+};
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">greet</span>(<span class="str">"World"</span>));  <span class="cm">// → "Hello, World!"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">square</span>(<span class="num">9</span>));       <span class="cm">// → 81</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">add</span>(<span class="num">3</span>, <span class="num">4</span>));       <span class="cm">// → 7</span></pre>
+      </div>
+
+      <h3>Default Parameters & Rest</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — parameters</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Default parameters</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(<span class="var">name</span>, <span class="var">role</span> <span class="op">=</span> <span class="str">"viewer"</span>, <span class="var">active</span> <span class="op">=</span> <span class="bool">true</span>) {
+  <span class="kw">return</span> { <span class="var">name</span>, <span class="var">role</span>, <span class="var">active</span> };
+}
+
+<span class="fn">createUser</span>(<span class="str">"Alice"</span>);
+<span class="cm">// → { name: "Alice", role: "viewer", active: true }</span>
+
+<span class="fn">createUser</span>(<span class="str">"Bob"</span>, <span class="str">"admin"</span>);
+<span class="cm">// → { name: "Bob", role: "admin", active: true }</span>
+
+<span class="cm">// Rest parameters — collect remaining args into an array</span>
+<span class="kw">function</span> <span class="fn">sum</span>(<span class="op">...</span><span class="var">numbers</span>) {
+  <span class="kw">return</span> <span class="var">numbers</span>.<span class="fn">reduce</span>((<span class="var">acc</span>, <span class="var">n</span>) <span class="op">=></span> <span class="var">acc</span> <span class="op">+</span> <span class="var">n</span>, <span class="num">0</span>);
+}
+
+<span class="fn">sum</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>);          <span class="cm">// → 6</span>
+<span class="fn">sum</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>);     <span class="cm">// → 15</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">🌟</span>
+        <div class="callout-body">
+          <strong>Single Responsibility Principle</strong>
+          <p>A good function does ONE thing well. If you need to say "and" when describing what it does, split it into two functions.</p>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 4.1</div>
+        <h4>Calculator Functions</h4>
+        <p>Create an arrow function for each: <code>add</code>, <code>subtract</code>, <code>multiply</code>, <code>divide</code>, and <code>power</code>. Then write a <code>calculate(a, op, b)</code> function that takes two numbers and an operator string (<code>"+"</code>, <code>"-"</code>, etc.) and returns the result.</p>
+        <div class="hint"><strong>Hint →</strong> Use a <code>switch</code> inside <code>calculate</code>. Handle division by zero!</div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 4.2</div>
+        <h4>isPrime Checker</h4>
+        <p>Write a function <code>isPrime(n)</code> that returns <code>true</code> if <code>n</code> is a prime number, <code>false</code> otherwise. Test it on: 2, 7, 10, 13, 25, 97.</p>
+        <div class="hint"><strong>Hint →</strong> A number is prime if no integer from 2 to √n divides it evenly. Use <code>Math.sqrt(n)</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 5: ARRAYS ── -->
+    <section class="chapter" id="chapter-5">
+      <div class="chapter-label">Chapter 05</div>
+      <h2>Arrays</h2>
+      <p class="chapter-intro">Arrays are ordered lists. JavaScript arrays can hold any mix of types and come with a rich set of built-in methods.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>Creating & Accessing Arrays</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — array basics</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">nums</span> <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>];
+
+<span class="var">nums</span>[<span class="num">0</span>]          <span class="cm">// → 10 (first element)</span>
+<span class="var">nums</span>[<span class="num">4</span>]          <span class="cm">// → 50 (last element)</span>
+<span class="var">nums</span>.<span class="fn">length</span>      <span class="cm">// → 5</span>
+<span class="var">nums</span>.<span class="fn">at</span>(<span class="op">-</span><span class="num">1</span>)      <span class="cm">// → 50 (last, modern way)</span>
+
+<span class="cm">// Adding / Removing</span>
+<span class="var">nums</span>.<span class="fn">push</span>(<span class="num">60</span>);    <span class="cm">// add to end → [10,20,30,40,50,60]</span>
+<span class="var">nums</span>.<span class="fn">pop</span>();       <span class="cm">// remove from end → returns 60</span>
+<span class="var">nums</span>.<span class="fn">unshift</span>(<span class="num">0</span>); <span class="cm">// add to start → [0,10,20,30,40,50]</span>
+<span class="var">nums</span>.<span class="fn">shift</span>();    <span class="cm">// remove from start → returns 0</span>
+
+<span class="cm">// Slicing & Splicing</span>
+<span class="var">nums</span>.<span class="fn">slice</span>(<span class="num">1</span>, <span class="num">3</span>)   <span class="cm">// → [20, 30] (doesn't modify original)</span>
+<span class="var">nums</span>.<span class="fn">splice</span>(<span class="num">2</span>, <span class="num">1</span>) <span class="cm">// removes 1 element at index 2</span></pre>
+      </div>
+
+      <h3>Powerful Array Methods</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — map, filter, reduce, find</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">numbers</span> <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>, <span class="num">8</span>];
+
+<span class="cm">// map — transform each element</span>
+<span class="kw">const</span> <span class="var">doubled</span> <span class="op">=</span> <span class="var">numbers</span>.<span class="fn">map</span>(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span>);
+<span class="cm">// → [2, 4, 6, 8, 10, 12, 14, 16]</span>
+
+<span class="cm">// filter — keep only matching elements</span>
+<span class="kw">const</span> <span class="var">evens</span> <span class="op">=</span> <span class="var">numbers</span>.<span class="fn">filter</span>(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">%</span> <span class="num">2</span> <span class="op">===</span> <span class="num">0</span>);
+<span class="cm">// → [2, 4, 6, 8]</span>
+
+<span class="cm">// reduce — accumulate into one value</span>
+<span class="kw">const</span> <span class="var">total</span> <span class="op">=</span> <span class="var">numbers</span>.<span class="fn">reduce</span>((<span class="var">acc</span>, <span class="var">n</span>) <span class="op">=></span> <span class="var">acc</span> <span class="op">+</span> <span class="var">n</span>, <span class="num">0</span>);
+<span class="cm">// → 36</span>
+
+<span class="cm">// find — first match</span>
+<span class="kw">const</span> <span class="var">firstBig</span> <span class="op">=</span> <span class="var">numbers</span>.<span class="fn">find</span>(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">></span> <span class="num">5</span>);
+<span class="cm">// → 6</span>
+
+<span class="cm">// some / every — boolean checks</span>
+<span class="var">numbers</span>.<span class="fn">some</span>(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">></span> <span class="num">7</span>);    <span class="cm">// → true (at least one)</span>
+<span class="var">numbers</span>.<span class="fn">every</span>(<span class="var">n</span> <span class="op">></span> <span class="num">0</span>);      <span class="cm">// → true (all positive)</span>
+
+<span class="cm">// sort (with comparator for numbers!)</span>
+[<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>].<span class="fn">sort</span>((<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> <span class="var">a</span> <span class="op">-</span> <span class="var">b</span>); <span class="cm">// → [1,1,3,4,5]</span>
+
+<span class="cm">// flat — flatten nested arrays</span>
+[<span class="num">1</span>, [<span class="num">2</span>, [<span class="num">3</span>, [<span class="num">4</span>]]]].<span class="fn">flat</span>(<span class="op">Infinity</span>); <span class="cm">// → [1,2,3,4]</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 5.1</div>
+        <h4>Student Grade Analyzer</h4>
+        <p>Given this array of student objects:</p>
+        <div class="code-block"><div class="code-header"><span class="code-label">DATA</span><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div></div>
+<pre><span class="kw">const</span> <span class="var">students</span> <span class="op">=</span> [
+  { <span class="prop">name</span>: <span class="str">"Alice"</span>, <span class="prop">grade</span>: <span class="num">92</span> },
+  { <span class="prop">name</span>: <span class="str">"Bob"</span>,   <span class="prop">grade</span>: <span class="num">58</span> },
+  { <span class="prop">name</span>: <span class="str">"Carol"</span>, <span class="prop">grade</span>: <span class="num">75</span> },
+  { <span class="prop">name</span>: <span class="str">"Dave"</span>,  <span class="prop">grade</span>: <span class="num">88</span> },
+  { <span class="prop">name</span>: <span class="str">"Eve"</span>,   <span class="prop">grade</span>: <span class="num">45</span> },
+];</pre></div>
+        <ol>
+          <li>Get an array of only passing students (grade ≥ 60)</li>
+          <li>Get just their names as an array</li>
+          <li>Calculate the average grade</li>
+          <li>Find the top scorer</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Chain <code>filter</code>, <code>map</code>, and <code>reduce</code>. For top scorer, use <code>Math.max(...students.map(s => s.grade))</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 6: OBJECTS ── -->
+    <section class="chapter" id="chapter-6">
+      <div class="chapter-label">Chapter 06</div>
+      <h2>Objects</h2>
+      <p class="chapter-intro">Objects are collections of key-value pairs. They model real-world entities and are the backbone of JavaScript data structures.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+
+      <h3>Creating & Using Objects</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — object fundamentals</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">car</span> <span class="op">=</span> {
+  <span class="prop">make</span>:  <span class="str">"Toyota"</span>,
+  <span class="prop">model</span>: <span class="str">"Supra"</span>,
+  <span class="prop">year</span>:  <span class="num">2023</span>,
+  <span class="prop">color</span>: <span class="str">"red"</span>,
+  <span class="fn">describe</span>() {
+    <span class="kw">return</span> <span class="str">`<span class="op">${</span><span class="kw">this</span>.<span class="prop">year</span><span class="op">}</span> <span class="op">${</span><span class="kw">this</span>.<span class="prop">make</span><span class="op">}</span> <span class="op">${</span><span class="kw">this</span>.<span class="prop">model</span><span class="op">}</span>`</span>;
+  }
+};
+
+<span class="cm">// Dot notation (preferred)</span>
+<span class="var">car</span>.<span class="prop">make</span>        <span class="cm">// → "Toyota"</span>
+
+<span class="cm">// Bracket notation (useful for dynamic keys)</span>
+<span class="kw">const</span> <span class="var">key</span> <span class="op">=</span> <span class="str">"model"</span>;
+<span class="var">car</span>[<span class="var">key</span>]        <span class="cm">// → "Supra"</span>
+
+<span class="cm">// Adding / modifying / deleting</span>
+<span class="var">car</span>.<span class="prop">mileage</span> <span class="op">=</span> <span class="num">0</span>;        <span class="cm">// add</span>
+<span class="var">car</span>.<span class="prop">color</span> <span class="op">=</span> <span class="str">"blue"</span>;    <span class="cm">// modify</span>
+<span class="kw">delete</span> <span class="var">car</span>.<span class="prop">color</span>;      <span class="cm">// delete</span>
+
+<span class="var">car</span>.<span class="fn">describe</span>() <span class="cm">// → "2023 Toyota Supra"</span></pre>
+      </div>
+
+      <h3>Destructuring, Spread & Object Methods</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — modern object patterns</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> { <span class="prop">name</span>: <span class="str">"Alice"</span>, <span class="prop">age</span>: <span class="num">30</span>, <span class="prop">city</span>: <span class="str">"London"</span> };
+
+<span class="cm">// Destructuring — extract into variables</span>
+<span class="kw">const</span> { <span class="var">name</span>, <span class="var">age</span>, <span class="var">city</span> <span class="op">=</span> <span class="str">"Unknown"</span> } <span class="op">=</span> <span class="var">user</span>;
+
+<span class="cm">// Spread — copy or merge objects</span>
+<span class="kw">const</span> <span class="var">updated</span> <span class="op">=</span> { <span class="op">...</span><span class="var">user</span>, <span class="prop">age</span>: <span class="num">31</span>, <span class="prop">country</span>: <span class="str">"UK"</span> };
+
+<span class="cm">// Object.keys / values / entries</span>
+<span class="fn">Object</span>.<span class="fn">keys</span>(<span class="var">user</span>)    <span class="cm">// → ["name", "age", "city"]</span>
+<span class="fn">Object</span>.<span class="fn">values</span>(<span class="var">user</span>)  <span class="cm">// → ["Alice", 30, "London"]</span>
+<span class="fn">Object</span>.<span class="fn">entries</span>(<span class="var">user</span>) <span class="cm">// → [["name","Alice"],["age",30],...]</span>
+
+<span class="cm">// Check if key exists</span>
+<span class="str">"name"</span> <span class="kw">in</span> <span class="var">user</span>       <span class="cm">// → true</span>
+<span class="var">user</span>.<span class="fn">hasOwnProperty</span>(<span class="str">"age"</span>) <span class="cm">// → true</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 6.1</div>
+        <h4>Library Book System</h4>
+        <p>Create a <code>book</code> object with: <code>title</code>, <code>author</code>, <code>year</code>, <code>available</code> (boolean), and a method <code>checkout()</code> that sets <code>available</code> to <code>false</code> and returns a message. Then:</p>
+        <ol>
+          <li>Create 3 books in an array</li>
+          <li>Filter to show only available ones</li>
+          <li>Checkout one book and verify it's no longer available</li>
+          <li>Use <code>Object.entries()</code> to print all properties of a book</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="divider">INTERMEDIATE TERRITORY</div>
+
+    <!-- ── CHAPTER 7: SCOPE & CLOSURES ── -->
+    <section class="chapter" id="chapter-7">
+      <div class="chapter-label">Chapter 07</div>
+      <h2>Scope &amp; Closures</h2>
+      <p class="chapter-intro">Scope determines where variables are accessible. Closures are functions that "remember" the environment they were created in — one of JavaScript's most powerful features.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>Variable Scope</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — scope levels</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">let</span> <span class="var">global</span> <span class="op">=</span> <span class="str">"I'm everywhere"</span>;  <span class="cm">// global scope</span>
+
+<span class="kw">function</span> <span class="fn">outer</span>() {
+  <span class="kw">let</span> <span class="var">outerVar</span> <span class="op">=</span> <span class="str">"outer"</span>;  <span class="cm">// function scope</span>
+
+  <span class="kw">function</span> <span class="fn">inner</span>() {
+    <span class="kw">let</span> <span class="var">innerVar</span> <span class="op">=</span> <span class="str">"inner"</span>; <span class="cm">// function scope (inner)</span>
+
+    <span class="cm">// Can access all parent scopes</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">innerVar</span>);  <span class="cm">// ✓ "inner"</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">outerVar</span>);  <span class="cm">// ✓ "outer"</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">global</span>);    <span class="cm">// ✓ "I'm everywhere"</span>
+  }
+
+  <span class="cm">// Cannot access inner's variables</span>
+  <span class="cm">// console.log(innerVar); ← ReferenceError</span>
+  <span class="fn">inner</span>();
+}
+
+<span class="cm">// Block scope with let/const</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">i</span> <span class="op"><</span> <span class="num">3</span>; <span class="var">i</span><span class="op">++</span>) {
+  <span class="cm">// i is scoped to this block</span>
+}
+<span class="cm">// console.log(i); ← ReferenceError with let (but works with var!)</span></pre>
+      </div>
+
+      <h3>Closures</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — closures in action</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// A closure "closes over" its surrounding variables</span>
+<span class="kw">function</span> <span class="fn">makeCounter</span>() {
+  <span class="kw">let</span> <span class="var">count</span> <span class="op">=</span> <span class="num">0</span>;  <span class="cm">// private state!</span>
+
+  <span class="kw">return</span> {
+    <span class="fn">increment</span>: () <span class="op">=></span> <span class="op">++</span><span class="var">count</span>,
+    <span class="fn">decrement</span>: () <span class="op">=></span> <span class="op">--</span><span class="var">count</span>,
+    <span class="fn">value</span>:     () <span class="op">=></span> <span class="var">count</span>
+  };
+}
+
+<span class="kw">const</span> <span class="var">counter</span> <span class="op">=</span> <span class="fn">makeCounter</span>();
+<span class="var">counter</span>.<span class="fn">increment</span>(); <span class="cm">// count → 1</span>
+<span class="var">counter</span>.<span class="fn">increment</span>(); <span class="cm">// count → 2</span>
+<span class="var">counter</span>.<span class="fn">decrement</span>(); <span class="cm">// count → 1</span>
+<span class="var">counter</span>.<span class="fn">value</span>();     <span class="cm">// → 1</span>
+
+<span class="cm">// Each call to makeCounter creates its OWN count</span>
+<span class="kw">const</span> <span class="var">counter2</span> <span class="op">=</span> <span class="fn">makeCounter</span>();
+<span class="var">counter2</span>.<span class="fn">increment</span>(); <span class="cm">// its own count → 1</span>
+<span class="var">counter</span>.<span class="fn">value</span>();      <span class="cm">// still 1 (independent!)</span>
+
+<span class="cm">// Practical: function factory</span>
+<span class="kw">const</span> <span class="fn">multiply</span> <span class="op">=</span> (<span class="var">factor</span>) <span class="op">=></span> (<span class="var">n</span>) <span class="op">=></span> <span class="var">n</span> <span class="op">*</span> <span class="var">factor</span>;
+
+<span class="kw">const</span> <span class="fn">double</span> <span class="op">=</span> <span class="fn">multiply</span>(<span class="num">2</span>);
+<span class="kw">const</span> <span class="fn">triple</span> <span class="op">=</span> <span class="fn">multiply</span>(<span class="num">3</span>);
+
+<span class="fn">double</span>(<span class="num">5</span>);  <span class="cm">// → 10</span>
+<span class="fn">triple</span>(<span class="num">5</span>); <span class="cm">// → 15</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 7.1</div>
+        <h4>Bank Account with Closure</h4>
+        <p>Use a closure to create a private bank account. The function <code>createAccount(initialBalance)</code> should return an object with methods: <code>deposit(amount)</code>, <code>withdraw(amount)</code>, <code>getBalance()</code>. The balance variable should NOT be directly accessible from outside.</p>
+        <div class="hint"><strong>Hint →</strong> The <code>balance</code> variable lives inside <code>createAccount</code> and is "closed over" by the returned methods.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 8: HOF ── -->
+    <section class="chapter" id="chapter-8">
+      <div class="chapter-label">Chapter 08</div>
+      <h2>Higher-Order Functions</h2>
+      <p class="chapter-intro">Higher-order functions accept other functions as arguments or return them. They unlock a functional programming style that leads to cleaner, more composable code.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — callbacks & composition</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Functions as arguments (callbacks)</span>
+<span class="kw">function</span> <span class="fn">applyTwice</span>(<span class="var">fn</span>, <span class="var">value</span>) {
+  <span class="kw">return</span> <span class="fn">fn</span>(<span class="fn">fn</span>(<span class="var">value</span>));
+}
+
+<span class="fn">applyTwice</span>(<span class="var">x</span> <span class="op">=></span> <span class="var">x</span> <span class="op">+</span> <span class="num">3</span>, <span class="num">10</span>); <span class="cm">// → 16</span>
+<span class="fn">applyTwice</span>(<span class="var">x</span> <span class="op">=></span> <span class="var">x</span> <span class="op">*</span> <span class="num">2</span>, <span class="num">5</span>);  <span class="cm">// → 20</span>
+
+<span class="cm">// Compose — chain functions right-to-left</span>
+<span class="kw">const</span> <span class="fn">compose</span> <span class="op">=</span> (<span class="op">...</span><span class="var">fns</span>) <span class="op">=></span>
+  (<span class="var">x</span>) <span class="op">=></span> <span class="var">fns</span>.<span class="fn">reduceRight</span>((<span class="var">v</span>, <span class="var">f</span>) <span class="op">=></span> <span class="fn">f</span>(<span class="var">v</span>), <span class="var">x</span>);
+
+<span class="kw">const</span> <span class="fn">addOne</span> <span class="op">=</span> <span class="var">x</span> <span class="op">=></span> <span class="var">x</span> <span class="op">+</span> <span class="num">1</span>;
+<span class="kw">const</span> <span class="fn">double</span> <span class="op">=</span> <span class="var">x</span> <span class="op">=></span> <span class="var">x</span> <span class="op">*</span> <span class="num">2</span>;
+<span class="kw">const</span> <span class="fn">square</span> <span class="op">=</span> <span class="var">x</span> <span class="op">=></span> <span class="var">x</span> <span class="op">**</span> <span class="num">2</span>;
+
+<span class="kw">const</span> <span class="fn">transform</span> <span class="op">=</span> <span class="fn">compose</span>(<span class="fn">double</span>, <span class="fn">addOne</span>, <span class="fn">square</span>);
+<span class="fn">transform</span>(<span class="num">3</span>); <span class="cm">// square(3)=9 → addOne(9)=10 → double(10)=20</span>
+
+<span class="cm">// Memoization — cache results for performance</span>
+<span class="kw">function</span> <span class="fn">memoize</span>(<span class="var">fn</span>) {
+  <span class="kw">const</span> <span class="var">cache</span> <span class="op">=</span> {};
+  <span class="kw">return</span> <span class="kw">function</span>(<span class="var">n</span>) {
+    <span class="kw">if</span> (<span class="var">n</span> <span class="kw">in</span> <span class="var">cache</span>) <span class="kw">return</span> <span class="var">cache</span>[<span class="var">n</span>];
+    <span class="kw">return</span> (<span class="var">cache</span>[<span class="var">n</span>] <span class="op">=</span> <span class="fn">fn</span>(<span class="var">n</span>));
+  };
+}
+
+<span class="kw">const</span> <span class="fn">fib</span> <span class="op">=</span> <span class="fn">memoize</span>(<span class="var">n</span> <span class="op">=></span>
+  <span class="var">n</span> <span class="op"><=</span> <span class="num">1</span> <span class="op">?</span> <span class="var">n</span> <span class="op">:</span> <span class="fn">fib</span>(<span class="var">n</span> <span class="op">-</span> <span class="num">1</span>) <span class="op">+</span> <span class="fn">fib</span>(<span class="var">n</span> <span class="op">-</span> <span class="num">2</span>)
+);</pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 8.1</div>
+        <h4>Pipeline Builder</h4>
+        <p>Create a <code>pipe(...fns)</code> function (like compose but left-to-right). Use it to build a text processing pipeline that: trims whitespace, converts to lowercase, replaces spaces with hyphens, and adds a <code>"post-"</code> prefix. Test it on <code>"  Hello World  "</code> → should output <code>"post-hello-world"</code>.</p>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 9: DOM ── -->
+    <section class="chapter" id="chapter-9">
+      <div class="chapter-label">Chapter 09</div>
+      <h2>DOM Manipulation</h2>
+      <p class="chapter-intro">The DOM (Document Object Model) is the programmatic representation of your HTML page. JavaScript uses it to read, create, modify, and delete HTML elements dynamically.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — selecting & modifying elements</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Selecting elements</span>
+<span class="kw">const</span> <span class="var">title</span> <span class="op">=</span> <span class="fn">document</span>.<span class="fn">getElementById</span>(<span class="str">"title"</span>);
+<span class="kw">const</span> <span class="var">btn</span>   <span class="op">=</span> <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">".btn-primary"</span>);
+<span class="kw">const</span> <span class="var">items</span> <span class="op">=</span> <span class="fn">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">"li.item"</span>);
+
+<span class="cm">// Modifying content</span>
+<span class="var">title</span>.<span class="prop">textContent</span> <span class="op">=</span> <span class="str">"New Title"</span>;    <span class="cm">// plain text</span>
+<span class="var">title</span>.<span class="prop">innerHTML</span>   <span class="op">=</span> <span class="str">"&lt;em&gt;Italic&lt;/em&gt;"</span>; <span class="cm">// HTML</span>
+
+<span class="cm">// Modifying styles</span>
+<span class="var">title</span>.<span class="prop">style</span>.<span class="prop">color</span>      <span class="op">=</span> <span class="str">"blue"</span>;
+<span class="var">title</span>.<span class="prop">style</span>.<span class="prop">fontSize</span>  <span class="op">=</span> <span class="str">"24px"</span>;
+<span class="var">title</span>.<span class="prop">style</span>.<span class="prop">display</span>   <span class="op">=</span> <span class="str">"none"</span>; <span class="cm">// hide it</span>
+
+<span class="cm">// Classes</span>
+<span class="var">btn</span>.<span class="prop">classList</span>.<span class="fn">add</span>(<span class="str">"active"</span>);
+<span class="var">btn</span>.<span class="prop">classList</span>.<span class="fn">remove</span>(<span class="str">"hidden"</span>);
+<span class="var">btn</span>.<span class="prop">classList</span>.<span class="fn">toggle</span>(<span class="str">"dark"</span>);
+<span class="var">btn</span>.<span class="prop">classList</span>.<span class="fn">contains</span>(<span class="str">"active"</span>); <span class="cm">// → true</span>
+
+<span class="cm">// Creating & inserting elements</span>
+<span class="kw">const</span> <span class="var">li</span> <span class="op">=</span> <span class="fn">document</span>.<span class="fn">createElement</span>(<span class="str">"li"</span>);
+<span class="var">li</span>.<span class="prop">textContent</span> <span class="op">=</span> <span class="str">"New item"</span>;
+<span class="var">li</span>.<span class="prop">className</span> <span class="op">=</span> <span class="str">"item"</span>;
+<span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"ul"</span>).<span class="fn">appendChild</span>(<span class="var">li</span>);
+
+<span class="cm">// Events</span>
+<span class="var">btn</span>.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="var">event</span>) <span class="op">=></span> {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Clicked!"</span>, <span class="var">event</span>.<span class="prop">target</span>);
+  <span class="var">event</span>.<span class="fn">preventDefault</span>(); <span class="cm">// stop default behavior</span>
+});
+
+<span class="cm">// Event delegation — one listener for many children</span>
+<span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"ul"</span>).<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="var">e</span>) <span class="op">=></span> {
+  <span class="kw">if</span> (<span class="var">e</span>.<span class="prop">target</span>.<span class="prop">tagName</span> <span class="op">===</span> <span class="str">"LI"</span>) {
+    <span class="var">e</span>.<span class="prop">target</span>.<span class="prop">classList</span>.<span class="fn">toggle</span>(<span class="str">"done"</span>);
+  }
+});</pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 9.1</div>
+        <h4>Interactive To-Do List</h4>
+        <p>Build an HTML page with a to-do list. It should:</p>
+        <ol>
+          <li>Have an input field and "Add" button</li>
+          <li>Clicking Add creates a new <code>&lt;li&gt;</code> with the input text</li>
+          <li>Clicking a task toggles a "completed" style (strikethrough)</li>
+          <li>Each task has a "Delete" button that removes it</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Use event delegation on the <code>&lt;ul&gt;</code> to handle clicks on dynamic items.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 10: ASYNC ── -->
+    <section class="chapter" id="chapter-10">
+      <div class="chapter-label">Chapter 10</div>
+      <h2>Async JavaScript</h2>
+      <p class="chapter-intro">JavaScript is single-threaded but handles asynchronous operations (network requests, timers, file reads) gracefully using callbacks, Promises, and the modern async/await syntax.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>Promises</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — promises</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// A Promise represents a future value</span>
+<span class="kw">const</span> <span class="fn">fetchData</span> <span class="op">=</span> () <span class="op">=></span>
+  <span class="kw">new</span> <span class="fn">Promise</span>((<span class="var">resolve</span>, <span class="var">reject</span>) <span class="op">=></span> {
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+      <span class="kw">const</span> <span class="var">data</span> <span class="op">=</span> { <span class="prop">id</span>: <span class="num">1</span>, <span class="prop">name</span>: <span class="str">"Alice"</span> };
+      <span class="fn">resolve</span>(<span class="var">data</span>); <span class="cm">// success</span>
+      <span class="cm">// reject(new Error("Network error")); // failure</span>
+    }, <span class="num">1000</span>);
+  });
+
+<span class="cm">// .then().catch() pattern</span>
+<span class="fn">fetchData</span>()
+  .<span class="fn">then</span>(<span class="var">data</span> <span class="op">=></span> <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">data</span>))
+  .<span class="fn">catch</span>(<span class="var">err</span> <span class="op">=></span> <span class="fn">console</span>.<span class="fn">error</span>(<span class="var">err</span>))
+  .<span class="fn">finally</span>(() <span class="op">=></span> <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Done"</span>));</pre>
+      </div>
+
+      <h3>async / await</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — async/await with fetch API</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// async/await is "syntactic sugar" over Promises</span>
+<span class="kw">async function</span> <span class="fn">getUser</span>(<span class="var">id</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">response</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`https://api.example.com/users/<span class="op">${</span><span class="var">id</span><span class="op">}</span>`</span>);
+
+    <span class="kw">if</span> (<span class="op">!</span><span class="var">response</span>.<span class="prop">ok</span>) {
+      <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`HTTP error: <span class="op">${</span><span class="var">response</span>.<span class="prop">status</span><span class="op">}</span>`</span>);
+    }
+
+    <span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">response</span>.<span class="fn">json</span>();
+    <span class="kw">return</span> <span class="var">user</span>;
+
+  } <span class="kw">catch</span> (<span class="var">error</span>) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">"Failed to fetch user:"</span>, <span class="var">error</span>);
+  }
+}
+
+<span class="cm">// Running multiple Promises in parallel</span>
+<span class="kw">async function</span> <span class="fn">loadDashboard</span>() {
+  <span class="kw">const</span> [<span class="var">user</span>, <span class="var">posts</span>, <span class="var">notifications</span>] <span class="op">=</span> <span class="kw">await</span> <span class="fn">Promise</span>.<span class="fn">all</span>([
+    <span class="fn">getUser</span>(<span class="num">1</span>),
+    <span class="fn">getPosts</span>(<span class="num">1</span>),
+    <span class="fn">getNotifications</span>(<span class="num">1</span>)
+  ]);
+  <span class="cm">// all three complete before continuing</span>
+}</pre>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">⚡</span>
+        <div class="callout-body">
+          <strong>Await only works inside async functions</strong>
+          <p>You can't use <code>await</code> at the top level of a regular script. Either wrap it in an <code>async</code> function, or use top-level <code>await</code> inside ES modules (<code>type="module"</code>).</p>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 10.1</div>
+        <h4>GitHub User Lookup</h4>
+        <p>Write an async function <code>lookupUser(username)</code> that fetches from <code>https://api.github.com/users/{username}</code> and returns an object with: <code>name</code>, <code>login</code>, <code>public_repos</code>, and <code>followers</code>. Handle errors gracefully. Test with <code>"torvalds"</code>.</p>
+        <div class="hint"><strong>Hint →</strong> The GitHub API is public and doesn't require a key for basic lookups. Use <code>fetch</code> + <code>response.json()</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 11: ES6+ ── -->
+    <section class="chapter" id="chapter-11">
+      <div class="chapter-label">Chapter 11</div>
+      <h2>ES6+ Modern Features</h2>
+      <p class="chapter-intro">ES6 (2015) and beyond introduced a wave of features that transformed how JavaScript is written. These are now standard and expected in modern code.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <div class="concept-grid">
+        <div class="concept-card"><div class="concept-icon">📦</div><h4>Destructuring</h4><p>Extract values from arrays/objects</p></div>
+        <div class="concept-card"><div class="concept-icon">🔀</div><h4>Spread / Rest</h4><p>Expand or collect values</p></div>
+        <div class="concept-card"><div class="concept-icon">🗂️</div><h4>Modules</h4><p>import / export</p></div>
+        <div class="concept-card"><div class="concept-icon">🏛️</div><h4>Classes</h4><p>OOP syntax</p></div>
+        <div class="concept-card"><div class="concept-icon">🔁</div><h4>Iterators</h4><p>Symbol.iterator protocol</p></div>
+        <div class="concept-card"><div class="concept-icon">⚙️</div><h4>Generators</h4><p>Pauseable functions</p></div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — ES6+ features</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// ── CLASSES ──</span>
+<span class="kw">class</span> <span class="fn">Animal</span> {
+  <span class="prop">#name</span>;  <span class="cm">// private field (ES2022)</span>
+
+  <span class="fn">constructor</span>(<span class="var">name</span>, <span class="var">sound</span>) {
+    <span class="kw">this</span>.<span class="prop">#name</span> <span class="op">=</span> <span class="var">name</span>;
+    <span class="kw">this</span>.<span class="prop">sound</span> <span class="op">=</span> <span class="var">sound</span>;
+  }
+
+  <span class="fn">speak</span>() {
+    <span class="kw">return</span> <span class="str">`<span class="op">${</span><span class="kw">this</span>.<span class="prop">#name</span><span class="op">}</span> says <span class="op">${</span><span class="kw">this</span>.<span class="prop">sound</span><span class="op">}</span>`</span>;
+  }
+
+  <span class="kw">get</span> <span class="fn">name</span>() { <span class="kw">return</span> <span class="kw">this</span>.<span class="prop">#name</span>; }
+}
+
+<span class="kw">class</span> <span class="fn">Dog</span> <span class="kw">extends</span> <span class="fn">Animal</span> {
+  <span class="fn">constructor</span>(<span class="var">name</span>) {
+    <span class="kw">super</span>(<span class="var">name</span>, <span class="str">"woof"</span>); <span class="cm">// call parent constructor</span>
+  }
+
+  <span class="fn">fetch</span>(<span class="var">item</span>) {
+    <span class="kw">return</span> <span class="str">`<span class="op">${</span><span class="kw">this</span>.<span class="prop">name</span><span class="op">}</span> fetches the <span class="op">${</span><span class="var">item</span><span class="op">}</span>!`</span>;
+  }
+}
+
+<span class="kw">const</span> <span class="var">rex</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Dog</span>(<span class="str">"Rex"</span>);
+<span class="var">rex</span>.<span class="fn">speak</span>();    <span class="cm">// → "Rex says woof"</span>
+<span class="var">rex</span>.<span class="fn">fetch</span>(<span class="str">"ball"</span>); <span class="cm">// → "Rex fetches the ball!"</span>
+
+<span class="cm">// ── GENERATORS ──</span>
+<span class="kw">function*</span> <span class="fn">range</span>(<span class="var">start</span>, <span class="var">end</span>) {
+  <span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="var">start</span>; <span class="var">i</span> <span class="op"><=</span> <span class="var">end</span>; <span class="var">i</span><span class="op">++</span>) {
+    <span class="kw">yield</span> <span class="var">i</span>;  <span class="cm">// pause and emit</span>
+  }
+}
+
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">n</span> <span class="kw">of</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">5</span>)) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">n</span>); <span class="cm">// 1, 2, 3, 4, 5</span>
+}
+
+<span class="cm">// ── MAP and SET ──</span>
+<span class="kw">const</span> <span class="var">map</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Map</span>();
+<span class="var">map</span>.<span class="fn">set</span>(<span class="str">"key1"</span>, <span class="num">100</span>);
+<span class="var">map</span>.<span class="fn">get</span>(<span class="str">"key1"</span>);  <span class="cm">// → 100</span>
+
+<span class="kw">const</span> <span class="var">set</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Set</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>]);
+[...<span class="var">set</span>]; <span class="cm">// → [1, 2, 3] (unique values)</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 11.1</div>
+        <h4>OOP Shape Calculator</h4>
+        <p>Create a base <code>Shape</code> class with a <code>color</code> property and <code>describe()</code> method. Extend it with <code>Circle(radius)</code> and <code>Rectangle(width, height)</code>. Each subclass should have <code>area()</code> and <code>perimeter()</code> methods. Create instances and log their properties.</p>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 12: ERROR HANDLING ── -->
+    <section class="chapter" id="chapter-12">
+      <div class="chapter-label">Chapter 12</div>
+      <h2>Error Handling</h2>
+      <p class="chapter-intro">Robust programs anticipate failure. JavaScript provides try/catch/finally for synchronous errors and .catch() / try-catch with await for async ones.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — error handling patterns</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// try / catch / finally</span>
+<span class="kw">function</span> <span class="fn">parseJSON</span>(<span class="var">str</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">result</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="var">str</span>);
+    <span class="kw">return</span> { <span class="prop">ok</span>: <span class="bool">true</span>, <span class="prop">data</span>: <span class="var">result</span> };
+  } <span class="kw">catch</span> (<span class="var">error</span>) {
+    <span class="kw">return</span> { <span class="prop">ok</span>: <span class="bool">false</span>, <span class="prop">error</span>: <span class="var">error</span>.<span class="prop">message</span> };
+  } <span class="kw">finally</span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"parseJSON finished"</span>); <span class="cm">// always runs</span>
+  }
+}
+
+<span class="fn">parseJSON</span>(<span class="str">'{"name":"Alice"}'</span>);  <span class="cm">// → { ok: true, data: {...} }</span>
+<span class="fn">parseJSON</span>(<span class="str">"not json"</span>);         <span class="cm">// → { ok: false, error: "..." }</span>
+
+<span class="cm">// Custom Error classes</span>
+<span class="kw">class</span> <span class="fn">ValidationError</span> <span class="kw">extends</span> <span class="fn">Error</span> {
+  <span class="fn">constructor</span>(<span class="var">field</span>, <span class="var">message</span>) {
+    <span class="kw">super</span>(<span class="var">message</span>);
+    <span class="kw">this</span>.<span class="prop">name</span>  <span class="op">=</span> <span class="str">"ValidationError"</span>;
+    <span class="kw">this</span>.<span class="prop">field</span> <span class="op">=</span> <span class="var">field</span>;
+  }
+}
+
+<span class="kw">function</span> <span class="fn">validateAge</span>(<span class="var">age</span>) {
+  <span class="kw">if</span> (<span class="fn">typeof</span> <span class="var">age</span> <span class="op">!==</span> <span class="str">"number"</span>)
+    <span class="kw">throw new</span> <span class="fn">ValidationError</span>(<span class="str">"age"</span>, <span class="str">"Must be a number"</span>);
+  <span class="kw">if</span> (<span class="var">age</span> <span class="op"><</span> <span class="num">0</span> <span class="op">||</span> <span class="var">age</span> <span class="op">></span> <span class="num">150</span>)
+    <span class="kw">throw new</span> <span class="fn">ValidationError</span>(<span class="str">"age"</span>, <span class="str">"Must be 0–150"</span>);
+  <span class="kw">return</span> <span class="bool">true</span>;
+}
+
+<span class="kw">try</span> {
+  <span class="fn">validateAge</span>(<span class="op">-</span><span class="num">5</span>);
+} <span class="kw">catch</span> (<span class="var">e</span>) {
+  <span class="kw">if</span> (<span class="var">e</span> <span class="kw">instanceof</span> <span class="fn">ValidationError</span>) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Field '<span class="op">${</span><span class="var">e</span>.<span class="prop">field</span><span class="op">}</span>': <span class="op">${</span><span class="var">e</span>.<span class="prop">message</span><span class="op">}</span>`</span>);
+  } <span class="kw">else</span> {
+    <span class="kw">throw</span> <span class="var">e</span>; <span class="cm">// re-throw unexpected errors</span>
+  }
+}</pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">
+          <strong>Error Handling Best Practices</strong>
+          <p>Only catch errors you can handle. Re-throw errors you don't know how to handle. Use custom error classes to distinguish error types. Always handle promise rejections.</p>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 12.1 — Capstone</div>
+        <h4>Robust API Client</h4>
+        <p>Build a <code>createAPIClient(baseURL)</code> function that returns an object with <code>get(path)</code> and <code>post(path, body)</code> methods. Requirements:</p>
+        <ol>
+          <li>Uses <code>fetch</code> with proper error handling</li>
+          <li>Throws a custom <code>APIError</code> with <code>status</code> and <code>url</code> properties on non-2xx responses</li>
+          <li>Automatically parses JSON responses</li>
+          <li>Has a configurable timeout (default 5s) using <code>AbortController</code></li>
+          <li>Logs the request URL and method before each request</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Use <code>AbortController</code> + <code>setTimeout</code> to implement timeout. Pass <code>signal: controller.signal</code> to <code>fetch</code>.</div>
+      </div>
+    </section>
+
+    <div class="divider">BONUS CHAPTERS</div>
+
+    <!-- ── CHAPTER 13: PROTOTYPES & THIS ── -->
+    <section class="chapter" id="chapter-13">
+      <div class="chapter-label">Chapter 13</div>
+      <h2>Prototypes &amp; <code style="font-size:.85em;color:var(--accent)">this</code></h2>
+      <p class="chapter-intro">Under the hood, JavaScript uses <strong>prototype chains</strong> for inheritance. The <code>this</code> keyword is one of JS's most confusing aspects — its value depends entirely on <em>how</em> a function is called, not where it's defined.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>How Prototypes Work</h3>
+      <p>Every JavaScript object has an internal link to another object called its <strong>prototype</strong>. When you access a property, JS walks up the chain until it finds it or reaches <code>null</code>.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — prototype chain</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">const</span> <span class="var">animal</span> <span class="op">=</span> {
+  <span class="fn">breathe</span>() { <span class="kw">return</span> <span class="str">"inhale... exhale..."</span>; }
+};
+
+<span class="kw">const</span> <span class="var">dog</span> <span class="op">=</span> <span class="fn">Object</span>.<span class="fn">create</span>(<span class="var">animal</span>); <span class="cm">// dog's prototype = animal</span>
+<span class="var">dog</span>.<span class="prop">name</span> <span class="op">=</span> <span class="str">"Rex"</span>;
+<span class="var">dog</span>.<span class="fn">bark</span> <span class="op">=</span> () <span class="op">=></span> <span class="str">"Woof!"</span>;
+
+<span class="var">dog</span>.<span class="fn">bark</span>();    <span class="cm">// → "Woof!"    (own property)</span>
+<span class="var">dog</span>.<span class="fn">breathe</span>(); <span class="cm">// → "inhale..." (from prototype!)</span>
+
+<span class="cm">// Check prototype</span>
+<span class="fn">Object</span>.<span class="fn">getPrototypeOf</span>(<span class="var">dog</span>) <span class="op">===</span> <span class="var">animal</span>; <span class="cm">// → true</span>
+
+<span class="cm">// hasOwnProperty — only own, not inherited</span>
+<span class="var">dog</span>.<span class="fn">hasOwnProperty</span>(<span class="str">"name"</span>);    <span class="cm">// → true</span>
+<span class="var">dog</span>.<span class="fn">hasOwnProperty</span>(<span class="str">"breathe"</span>); <span class="cm">// → false (it's inherited)</span>
+
+<span class="cm">// Constructor function (pre-class syntax)</span>
+<span class="kw">function</span> <span class="fn">Person</span>(<span class="var">name</span>, <span class="var">age</span>) {
+  <span class="kw">this</span>.<span class="prop">name</span> <span class="op">=</span> <span class="var">name</span>;
+  <span class="kw">this</span>.<span class="prop">age</span>  <span class="op">=</span> <span class="var">age</span>;
+}
+
+<span class="fn">Person</span>.<span class="prop">prototype</span>.<span class="fn">greet</span> <span class="op">=</span> <span class="kw">function</span>() {
+  <span class="kw">return</span> <span class="str">`Hi, I'm <span class="op">${</span><span class="kw">this</span>.<span class="prop">name</span><span class="op">}</span>`</span>;
+};
+
+<span class="kw">const</span> <span class="var">alice</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Person</span>(<span class="str">"Alice"</span>, <span class="num">30</span>);
+<span class="var">alice</span>.<span class="fn">greet</span>(); <span class="cm">// → "Hi, I'm Alice"</span></pre>
+      </div>
+
+      <h3>Understanding <code>this</code></h3>
+
+      <div class="callout danger">
+        <span class="callout-icon">🎯</span>
+        <div class="callout-body">
+          <strong>The Golden Rule of <code>this</code></strong>
+          <p><code>this</code> is determined by <em>how the function is called</em>, not where it's defined. Arrow functions are the exception — they inherit <code>this</code> from their surrounding lexical scope.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — this in different contexts</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// 1. Method call — this = the object before the dot</span>
+<span class="kw">const</span> <span class="var">obj</span> <span class="op">=</span> {
+  <span class="prop">value</span>: <span class="num">42</span>,
+  <span class="fn">getValue</span>() { <span class="kw">return</span> <span class="kw">this</span>.<span class="prop">value</span>; }
+};
+<span class="var">obj</span>.<span class="fn">getValue</span>(); <span class="cm">// → 42</span>
+
+<span class="cm">// 2. Lost context — this becomes undefined (strict) or global</span>
+<span class="kw">const</span> <span class="fn">fn</span> <span class="op">=</span> <span class="var">obj</span>.<span class="prop">getValue</span>;
+<span class="fn">fn</span>(); <span class="cm">// → undefined (lost `this`!)</span>
+
+<span class="cm">// Fix 1: bind() — permanently bind this</span>
+<span class="kw">const</span> <span class="fn">bound</span> <span class="op">=</span> <span class="var">obj</span>.<span class="prop">getValue</span>.<span class="fn">bind</span>(<span class="var">obj</span>);
+<span class="fn">bound</span>(); <span class="cm">// → 42 ✓</span>
+
+<span class="cm">// Fix 2: Arrow function — uses enclosing this</span>
+<span class="kw">class</span> <span class="fn">Timer</span> {
+  <span class="fn">constructor</span>() {
+    <span class="kw">this</span>.<span class="prop">ticks</span> <span class="op">=</span> <span class="num">0</span>;
+  }
+
+  <span class="fn">start</span>() {
+    <span class="cm">// Arrow: this = Timer instance ✓</span>
+    <span class="fn">setInterval</span>(() <span class="op">=></span> {
+      <span class="kw">this</span>.<span class="prop">ticks</span><span class="op">++</span>;
+      <span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">this</span>.<span class="prop">ticks</span>);
+    }, <span class="num">1000</span>);
+  }
+}
+
+<span class="cm">// call() and apply() — invoke with explicit this</span>
+<span class="kw">function</span> <span class="fn">introduce</span>(<span class="var">greeting</span>, <span class="var">punctuation</span>) {
+  <span class="kw">return</span> <span class="str">`<span class="op">${</span><span class="var">greeting</span><span class="op">}</span>, I'm <span class="op">${</span><span class="kw">this</span>.<span class="prop">name</span><span class="op">}</span><span class="op">${</span><span class="var">punctuation</span><span class="op">}</span>`</span>;
+}
+
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> { <span class="prop">name</span>: <span class="str">"Bob"</span> };
+<span class="fn">introduce</span>.<span class="fn">call</span>(<span class="var">user</span>, <span class="str">"Hello"</span>, <span class="str">"!"</span>);         <span class="cm">// → "Hello, I'm Bob!"</span>
+<span class="fn">introduce</span>.<span class="fn">apply</span>(<span class="var">user</span>, [<span class="str">"Hey"</span>, <span class="str">"."</span>]);        <span class="cm">// → "Hey, I'm Bob."</span></pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 13.1</div>
+        <h4>Event Handler Context Fix</h4>
+        <p>Given a class <code>Button</code> with a <code>label</code> property and a <code>handleClick()</code> method that logs <code>this.label</code>, the method loses <code>this</code> when passed as a DOM event handler. Fix it three different ways: using <code>.bind()</code>, an arrow function wrapper, and an arrow function as a class field.</p>
+        <div class="hint"><strong>Hint →</strong> Arrow class fields: <code>handleClick = () => { ... }</code> defined directly on the class body (no method keyword).</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 14: REGEX ── -->
+    <section class="chapter" id="chapter-14">
+      <div class="chapter-label">Chapter 14</div>
+      <h2>Regular Expressions</h2>
+      <p class="chapter-intro">Regular expressions (regex) are patterns for matching and manipulating text. They look cryptic at first, but mastering even the basics unlocks powerful string processing capabilities.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>Regex Syntax Basics</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>Meaning</th><th>Example Match</th></tr></thead>
+          <tbody>
+            <tr><td><code>.</code></td><td>Any character except newline</td><td><code>c.t</code> → "cat", "cut"</td></tr>
+            <tr><td><code>\d</code></td><td>Any digit [0–9]</td><td><code>\d\d</code> → "42"</td></tr>
+            <tr><td><code>\w</code></td><td>Word char [a-zA-Z0-9_]</td><td><code>\w+</code> → "hello"</td></tr>
+            <tr><td><code>\s</code></td><td>Whitespace</td><td><code>a\sb</code> → "a b"</td></tr>
+            <tr><td><code>^</code></td><td>Start of string</td><td><code>^Hello</code></td></tr>
+            <tr><td><code>$</code></td><td>End of string</td><td><code>world$</code></td></tr>
+            <tr><td><code>*</code></td><td>0 or more</td><td><code>ab*</code> → "a", "ab", "abb"</td></tr>
+            <tr><td><code>+</code></td><td>1 or more</td><td><code>ab+</code> → "ab", "abb"</td></tr>
+            <tr><td><code>?</code></td><td>0 or 1 (optional)</td><td><code>colou?r</code> → "color","colour"</td></tr>
+            <tr><td><code>{n,m}</code></td><td>Between n and m times</td><td><code>\d{2,4}</code> → "42", "2024"</td></tr>
+            <tr><td><code>[abc]</code></td><td>Any of a, b, or c</td><td><code>[aeiou]</code> → vowels</td></tr>
+            <tr><td><code>(abc)</code></td><td>Capture group</td><td><code>(\d+)-(\d+)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — regex methods</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Creating regex: literal syntax (preferred) or constructor</span>
+<span class="kw">const</span> <span class="var">pattern</span> <span class="op">=</span> <span class="str">/hello/i</span>;          <span class="cm">// i = case-insensitive</span>
+<span class="kw">const</span> <span class="var">pattern2</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">RegExp</span>(<span class="str">"hello"</span>, <span class="str">"i"</span>); <span class="cm">// same</span>
+
+<span class="cm">// .test() — returns boolean</span>
+<span class="str">/^\d{5}$/</span>.<span class="fn">test</span>(<span class="str">"90210"</span>);   <span class="cm">// → true  (US zip code)</span>
+<span class="str">/^\d{5}$/</span>.<span class="fn">test</span>(<span class="str">"9021"</span>);    <span class="cm">// → false</span>
+
+<span class="cm">// .match() — returns array of matches</span>
+<span class="str">"2024-05-12"</span>.<span class="fn">match</span>(<span class="str">/(\d{4})-(\d{2})-(\d{2})/</span>);
+<span class="cm">// → ["2024-05-12", "2024", "05", "12", ...]</span>
+
+<span class="cm">// .matchAll() — all matches (with g flag)</span>
+<span class="kw">const</span> <span class="var">text</span> <span class="op">=</span> <span class="str">"cat bat sat"</span>;
+[...<span class="var">text</span>.<span class="fn">matchAll</span>(<span class="str">/[a-z]at/g</span>)].<span class="fn">map</span>(<span class="var">m</span> <span class="op">=></span> <span class="var">m</span>[<span class="num">0</span>]);
+<span class="cm">// → ["cat", "bat", "sat"]</span>
+
+<span class="cm">// .replace() — substitute matches</span>
+<span class="str">"Hello World"</span>.<span class="fn">replace</span>(<span class="str">/o/g</span>, <span class="str">"0"</span>); <span class="cm">// → "Hell0 W0rld"</span>
+
+<span class="cm">// Named capture groups</span>
+<span class="kw">const</span> <span class="var">dateStr</span> <span class="op">=</span> <span class="str">"2024-05-12"</span>;
+<span class="kw">const</span> { <span class="prop">groups</span>: { <span class="var">year</span>, <span class="var">month</span>, <span class="var">day</span> } } <span class="op">=</span>
+  <span class="var">dateStr</span>.<span class="fn">match</span>(<span class="str">/(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})/</span>);
+<span class="cm">// year="2024", month="05", day="12"</span>
+
+<span class="cm">// Common practical patterns</span>
+<span class="kw">const</span> <span class="var">EMAIL_RE</span>   <span class="op">=</span> <span class="str">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+<span class="kw">const</span> <span class="var">URL_RE</span>     <span class="op">=</span> <span class="str">/^https?:\/\/[\w\-.]+(\/[\w\-./?%&=]*)?$/</span>;
+<span class="kw">const</span> <span class="var">PHONE_RE</span>   <span class="op">=</span> <span class="str">/^\+?[\d\s\-()]{7,15}$/</span>;
+<span class="kw">const</span> <span class="var">HEX_COLOR</span>  <span class="op">=</span> <span class="str">/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/</span>;</pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 14.1</div>
+        <h4>Form Validator with Regex</h4>
+        <p>Build a <code>validate(field, value)</code> function that accepts a field name and validates the value using regex. Support these fields: <code>"email"</code>, <code>"password"</code> (min 8 chars, 1 uppercase, 1 number), <code>"username"</code> (3–16 alphanumeric chars), <code>"phone"</code>. Return <code>{ valid: boolean, message: string }</code>.</p>
+        <div class="hint"><strong>Hint →</strong> Use a <code>switch</code> on <code>field</code>. For password: <code>/(?=.*[A-Z])(?=.*\d).{8,}/</code> uses lookaheads.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 15: LOCALSTORAGE & JSON ── -->
+    <section class="chapter" id="chapter-15">
+      <div class="chapter-label">Chapter 15</div>
+      <h2>LocalStorage &amp; JSON</h2>
+      <p class="chapter-intro">Browsers provide <strong>LocalStorage</strong> for persisting data between page refreshes. Combined with <strong>JSON serialization</strong>, it lets you store complex objects that survive browser sessions.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>JSON — JavaScript Object Notation</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — JSON serialization</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// JSON.stringify() — object → string</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> {
+  <span class="prop">name</span>: <span class="str">"Alice"</span>,
+  <span class="prop">age</span>: <span class="num">30</span>,
+  <span class="prop">hobbies</span>: [<span class="str">"coding"</span>, <span class="str">"hiking"</span>],
+  <span class="prop">address</span>: { <span class="prop">city</span>: <span class="str">"London"</span> }
+};
+
+<span class="kw">const</span> <span class="var">json</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">user</span>);
+<span class="cm">// → '{"name":"Alice","age":30,"hobbies":["coding","hiking"],...}'</span>
+
+<span class="kw">const</span> <span class="var">pretty</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">user</span>, <span class="kw">null</span>, <span class="num">2</span>); <span class="cm">// indented</span>
+
+<span class="cm">// JSON.parse() — string → object</span>
+<span class="kw">const</span> <span class="var">restored</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="var">json</span>);
+<span class="var">restored</span>.<span class="prop">name</span>; <span class="cm">// → "Alice"</span>
+
+<span class="cm">// Deep clone trick (simple cases only)</span>
+<span class="kw">const</span> <span class="var">clone</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">user</span>));
+
+<span class="cm">// JSON caveats — these are dropped or changed:</span>
+<span class="fn">JSON</span>.<span class="fn">stringify</span>({ <span class="prop">fn</span>: () <span class="op">=></span> {}, <span class="prop">undef</span>: <span class="kw">undefined</span> });
+<span class="cm">// → "{}"  (functions and undefined are silently dropped)</span>
+<span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="kw">new</span> <span class="fn">Date</span>());
+<span class="cm">// → '"2024-05-12T..."' (dates become strings)</span></pre>
+      </div>
+
+      <h3>LocalStorage API</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — localStorage</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// localStorage only stores strings — always JSON-encode objects</span>
+
+<span class="cm">// Save</span>
+<span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="str">"theme"</span>, <span class="str">"dark"</span>);
+<span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="str">"user"</span>, <span class="fn">JSON</span>.<span class="fn">stringify</span>({ <span class="prop">name</span>: <span class="str">"Alice"</span> }));
+
+<span class="cm">// Read</span>
+<span class="kw">const</span> <span class="var">theme</span> <span class="op">=</span> <span class="fn">localStorage</span>.<span class="fn">getItem</span>(<span class="str">"theme"</span>);     <span class="cm">// → "dark"</span>
+<span class="kw">const</span> <span class="var">user</span>  <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="fn">localStorage</span>.<span class="fn">getItem</span>(<span class="str">"user"</span>));
+
+<span class="cm">// Delete</span>
+<span class="fn">localStorage</span>.<span class="fn">removeItem</span>(<span class="str">"theme"</span>);
+<span class="fn">localStorage</span>.<span class="fn">clear</span>(); <span class="cm">// wipe everything</span>
+
+<span class="cm">// Safe helper utility</span>
+<span class="kw">const</span> <span class="var">storage</span> <span class="op">=</span> {
+  <span class="fn">get</span>(<span class="var">key</span>, <span class="var">fallback</span> <span class="op">=</span> <span class="kw">null</span>) {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="fn">localStorage</span>.<span class="fn">getItem</span>(<span class="var">key</span>);
+      <span class="kw">return</span> <span class="var">item</span> <span class="op">!==</span> <span class="kw">null</span> <span class="op">?</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="var">item</span>) <span class="op">:</span> <span class="var">fallback</span>;
+    } <span class="kw">catch</span> { <span class="kw">return</span> <span class="var">fallback</span>; }
+  },
+  <span class="fn">set</span>(<span class="var">key</span>, <span class="var">value</span>) {
+    <span class="kw">try</span> { <span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="var">key</span>, <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">value</span>)); }
+    <span class="kw">catch</span> (<span class="var">e</span>) { <span class="fn">console</span>.<span class="fn">warn</span>(<span class="str">"Storage full"</span>, <span class="var">e</span>); }
+  }
+};
+
+<span class="cm">// Usage:</span>
+<span class="var">storage</span>.<span class="fn">set</span>(<span class="str">"prefs"</span>, { <span class="prop">lang</span>: <span class="str">"en"</span>, <span class="prop">dark</span>: <span class="bool">true</span> });
+<span class="var">storage</span>.<span class="fn">get</span>(<span class="str">"prefs"</span>, { <span class="prop">lang</span>: <span class="str">"en"</span> }); <span class="cm">// fallback if missing</span></pre>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">🔐</span>
+        <div class="callout-body">
+          <strong>Never store sensitive data in LocalStorage</strong>
+          <p>LocalStorage is accessible by any JavaScript on the page, making it vulnerable to XSS attacks. Never store passwords, tokens, or personal data there. Use <code>httpOnly</code> cookies for auth tokens.</p>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-badge">✏️ Exercise 15.1</div>
+        <h4>Persistent Notes App</h4>
+        <p>Build a notes app that stores notes in LocalStorage. It should:</p>
+        <ol>
+          <li>Load existing notes on page start</li>
+          <li>Allow adding a note (title + body)</li>
+          <li>Allow deleting individual notes</li>
+          <li>Automatically save any change to LocalStorage</li>
+          <li>Show the total note count</li>
+        </ol>
+        <div class="hint"><strong>Hint →</strong> Store an array of note objects. Each time notes change, call <code>storage.set("notes", notesArray)</code>.</div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 16: MODULES & TOOLING ── -->
+    <section class="chapter" id="chapter-16">
+      <div class="chapter-label">Chapter 16</div>
+      <h2>Modules &amp; Tooling</h2>
+      <p class="chapter-intro">Modern JavaScript is written in <strong>modules</strong> — separate files that import and export functionality. Tools like npm, bundlers, and linters are essential for real-world development.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>ES Modules — import / export</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">math.js — exporting</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Named exports — export multiple things</span>
+<span class="kw">export const</span> <span class="var">PI</span> <span class="op">=</span> <span class="num">3.14159</span>;
+
+<span class="kw">export function</span> <span class="fn">add</span>(<span class="var">a</span>, <span class="var">b</span>) { <span class="kw">return</span> <span class="var">a</span> <span class="op">+</span> <span class="var">b</span>; }
+<span class="kw">export function</span> <span class="fn">multiply</span>(<span class="var">a</span>, <span class="var">b</span>) { <span class="kw">return</span> <span class="var">a</span> <span class="op">*</span> <span class="var">b</span>; }
+
+<span class="cm">// Default export — one per file, any name on import</span>
+<span class="kw">export default function</span> <span class="fn">square</span>(<span class="var">x</span>) { <span class="kw">return</span> <span class="var">x</span> <span class="op">**</span> <span class="num">2</span>; }</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">main.js — importing</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Import named exports</span>
+<span class="kw">import</span> { <span class="var">PI</span>, <span class="fn">add</span>, <span class="fn">multiply</span> } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// Import with alias</span>
+<span class="kw">import</span> { <span class="fn">add</span> <span class="kw">as</span> <span class="fn">sum</span> } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// Import default</span>
+<span class="kw">import</span> <span class="fn">square</span> <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// Import everything as namespace</span>
+<span class="kw">import</span> <span class="op">*</span> <span class="kw">as</span> <span class="var">Math</span> <span class="kw">from</span> <span class="str">"./math.js"</span>;
+<span class="var">Math</span>.<span class="fn">add</span>(<span class="num">2</span>, <span class="num">3</span>); <span class="cm">// → 5</span>
+
+<span class="cm">// Dynamic import — lazy loading</span>
+<span class="kw">async function</span> <span class="fn">loadChart</span>() {
+  <span class="kw">const</span> { <span class="fn">drawChart</span> } <span class="op">=</span> <span class="kw">await</span> <span class="kw">import</span>(<span class="str">"./charts.js"</span>);
+  <span class="fn">drawChart</span>(<span class="var">data</span>);
+}</pre>
+      </div>
+
+      <h3>npm & Package Management</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">TERMINAL — common npm commands</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm"># Initialize a project</span>
+npm init -y
+
+<span class="cm"># Install a package (saves to dependencies)</span>
+npm install lodash
+
+<span class="cm"># Install dev-only tool</span>
+npm install --save-dev eslint prettier
+
+<span class="cm"># Run a script from package.json</span>
+npm run build
+npm run dev
+
+<span class="cm"># Global install (CLI tools)</span>
+npm install -g typescript
+
+<span class="cm"># List installed packages</span>
+npm list --depth=0</pre>
+      </div>
+
+      <h3>package.json Scripts</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">package.json</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre>{
+  <span class="str">"name"</span>: <span class="str">"my-app"</span>,
+  <span class="str">"version"</span>: <span class="str">"1.0.0"</span>,
+  <span class="str">"scripts"</span>: {
+    <span class="str">"dev"</span>:   <span class="str">"vite"</span>,
+    <span class="str">"build"</span>: <span class="str">"vite build"</span>,
+    <span class="str">"lint"</span>:  <span class="str">"eslint src/**/*.js"</span>,
+    <span class="str">"test"</span>:  <span class="str">"jest"</span>
+  },
+  <span class="str">"dependencies"</span>: {
+    <span class="str">"lodash"</span>: <span class="str">"^4.17.21"</span>
+  },
+  <span class="str">"devDependencies"</span>: {
+    <span class="str">"eslint"</span>:   <span class="str">"^8.0.0"</span>,
+    <span class="str">"prettier"</span>: <span class="str">"^3.0.0"</span>,
+    <span class="str">"vite"</span>:     <span class="str">"^5.0.0"</span>
+  }
+}</pre>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">🛠️</span>
+        <div class="callout-body">
+          <strong>Recommended Beginner Toolchain</strong>
+          <p>Start with <strong>Vite</strong> as a dev server and bundler, <strong>ESLint</strong> for catching errors, and <strong>Prettier</strong> for auto-formatting. This combo is fast, modern, and requires minimal configuration.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 17: DEBUGGING ── -->
+    <section class="chapter" id="chapter-17">
+      <div class="chapter-label">Chapter 17</div>
+      <h2>Debugging Tips</h2>
+      <p class="chapter-intro">Debugging is the skill of finding and fixing what's wrong with code. Good developers spend as much time debugging as writing — learning to do it efficiently is essential.</p>
+      <span class="tag tag-intermediate">INTERMEDIATE</span>
+
+      <h3>Console Methods</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — console toolkit</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="cm">// Basic logging</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Regular message"</span>);
+<span class="fn">console</span>.<span class="fn">warn</span>(<span class="str">"Warning!"</span>);        <span class="cm">// yellow</span>
+<span class="fn">console</span>.<span class="fn">error</span>(<span class="str">"Error!"</span>);        <span class="cm">// red with stack trace</span>
+<span class="fn">console</span>.<span class="fn">info</span>(<span class="str">"Info"</span>);
+
+<span class="cm">// Inspect objects nicely</span>
+<span class="fn">console</span>.<span class="fn">table</span>([
+  { <span class="prop">name</span>: <span class="str">"Alice"</span>, <span class="prop">age</span>: <span class="num">30</span> },
+  { <span class="prop">name</span>: <span class="str">"Bob"</span>,   <span class="prop">age</span>: <span class="num">25</span> }
+]);  <span class="cm">// renders a nice table ✨</span>
+
+<span class="cm">// Grouping related logs</span>
+<span class="fn">console</span>.<span class="fn">group</span>(<span class="str">"User Login"</span>);
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Checking credentials..."</span>);
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Token issued"</span>);
+<span class="fn">console</span>.<span class="fn">groupEnd</span>();
+
+<span class="cm">// Timing performance</span>
+<span class="fn">console</span>.<span class="fn">time</span>(<span class="str">"sort"</span>);
+<span class="var">bigArray</span>.<span class="fn">sort</span>();
+<span class="fn">console</span>.<span class="fn">timeEnd</span>(<span class="str">"sort"</span>); <span class="cm">// → "sort: 14.2ms"</span>
+
+<span class="cm">// Assertions — logs error if condition is false</span>
+<span class="fn">console</span>.<span class="fn">assert</span>(<span class="num">1</span> <span class="op">===</span> <span class="num">2</span>, <span class="str">"Math is broken"</span>); <span class="cm">// logs error</span>
+
+<span class="cm">// Count how many times a line runs</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">i</span> <span class="op"><</span> <span class="num">5</span>; <span class="var">i</span><span class="op">++</span>) {
+  <span class="fn">console</span>.<span class="fn">count</span>(<span class="str">"loop"</span>); <span class="cm">// loop: 1 ... loop: 5</span>
+}
+
+<span class="cm">// Stack trace — who called this?</span>
+<span class="fn">console</span>.<span class="fn">trace</span>(<span class="str">"Called from"</span>);</pre>
+      </div>
+
+      <h3>The debugger Statement & DevTools</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">EXAMPLE — debugger & breakpoints</span>
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+<pre><span class="kw">function</span> <span class="fn">calculateTotal</span>(<span class="var">items</span>) {
+  <span class="kw">debugger</span>; <span class="cm">// execution pauses here in DevTools</span>
+             <span class="cm">// you can inspect variables, step through code</span>
+
+  <span class="kw">return</span> <span class="var">items</span>.<span class="fn">reduce</span>((<span class="var">sum</span>, <span class="var">item</span>) <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Adding <span class="op">${</span><span class="var">item</span>.<span class="prop">price</span><span class="op">}</span>, running total: <span class="op">${</span><span class="var">sum</span><span class="op">}</span>`</span>);
+    <span class="kw">return</span> <span class="var">sum</span> <span class="op">+</span> <span class="var">item</span>.<span class="prop">price</span>;
+  }, <span class="num">0</span>);
+}</pre>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="concept-icon">🔍</div>
+          <h4>Sources Panel</h4>
+          <p>Set breakpoints by clicking line numbers. Step over/into/out of functions.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🌐</div>
+          <h4>Network Panel</h4>
+          <p>Inspect HTTP requests, headers, payloads, and response data.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">📊</div>
+          <h4>Performance Panel</h4>
+          <p>Record and analyze rendering, scripting, and paint timelines.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🧠</div>
+          <h4>Memory Panel</h4>
+          <p>Find memory leaks and visualize heap snapshots.</p>
+        </div>
+      </div>
+
+      <h3>Common Bug Patterns & Fixes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bug Pattern</th><th>Symptom</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>Using <code>==</code></td><td>Unexpected truthy/falsy</td><td>Always use <code>===</code></td></tr>
+            <tr><td>Mutating shared state</td><td>Side effects in other components</td><td>Clone with spread: <code>[...arr]</code></td></tr>
+            <tr><td>Off-by-one</td><td>Missing first/last element</td><td>Check loop bounds carefully</td></tr>
+            <tr><td>Async not awaited</td><td>Getting <code>Promise {&lt;pending&gt;}</code></td><td>Add <code>await</code> keyword</td></tr>
+            <tr><td>Stale closure</td><td>Reading old variable value</td><td>Use <code>useRef</code> or pass as parameter</td></tr>
+            <tr><td><code>this</code> context lost</td><td><code>undefined</code> in methods</td><td>Arrow function or <code>.bind()</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── CHAPTER 18: MINI PROJECTS ── -->
+    <section class="chapter" id="chapter-18">
+      <div class="chapter-label">Chapter 18 — Final</div>
+      <h2>Mini Projects</h2>
+      <p class="chapter-intro">The best way to cement your knowledge is to build things. Here are three progressively challenging projects that tie together everything from this manual.</p>
+      <span class="tag tag-beginner">BEGINNER</span>
+      <span class="tag tag-intermediate" style="margin-left:4px">INTERMEDIATE</span>
+
+      <!-- PROJECT 1 -->
+      <div class="exercise" style="--accent4: #69db7c;">
+        <div class="exercise-badge" style="color: var(--green);">🟢 PROJECT 1 — BEGINNER</div>
+        <h4>Quiz Game</h4>
+        <p>Build a multiple-choice quiz app entirely in the browser.</p>
+        <p><strong>Requirements:</strong></p>
+        <ol>
+          <li>Store 5+ questions as an array of objects: <code>{ question, options[], correct }</code></li>
+          <li>Show one question at a time with clickable answer buttons</li>
+          <li>Track score — highlight correct/wrong answers</li>
+          <li>Show a results screen at the end with percentage score</li>
+          <li>Add a "Play Again" button that resets and shuffles questions</li>
+        </ol>
+        <p><strong>Concepts used:</strong> Arrays, Objects, DOM manipulation, Events, Control flow</p>
+        <div class="hint"><strong>Starter structure →</strong>
+<pre style="margin-top:8px;font-size:12px;color:var(--text-muted)">const questions = [
+  {
+    question: "What does === check?",
+    options: ["Value only","Type only","Value and type","Nothing"],
+    correct: 2
+  },
+  // ... more questions
+];
+
+let currentIndex = 0, score = 0;
+function showQuestion() { /* update DOM */ }
+function handleAnswer(selectedIndex) { /* check, score, next */ }</pre>
+        </div>
+      </div>
+
+      <!-- PROJECT 2 -->
+      <div class="exercise" style="--accent4: #f7c948;">
+        <div class="exercise-badge">🟡 PROJECT 2 — INTERMEDIATE</div>
+        <h4>Weather Dashboard</h4>
+        <p>Fetch live weather data and display it beautifully.</p>
+        <p><strong>Requirements:</strong></p>
+        <ol>
+          <li>Use the free <a href="https://open-meteo.com" target="_blank" style="color:var(--accent3)">Open-Meteo API</a> (no key needed)</li>
+          <li>Let the user search by city name → use the Geocoding API to get coordinates</li>
+          <li>Display: current temperature, weather code, wind speed, humidity</li>
+          <li>Show a 7-day forecast as a row of cards</li>
+          <li>Store last searched city in LocalStorage</li>
+          <li>Handle loading states and error messages gracefully</li>
+        </ol>
+        <p><strong>Concepts used:</strong> Async/Await, Fetch API, DOM, LocalStorage, Error handling</p>
+        <div class="hint"><strong>API endpoint example →</strong> <code style="font-size:11px">https://api.open-meteo.com/v1/forecast?latitude=51.5&longitude=-0.1&current=temperature_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&forecast_days=7</code></div>
+      </div>
+
+      <!-- PROJECT 3 -->
+      <div class="exercise" style="--accent4: #ff6b6b;">
+        <div class="exercise-badge" style="color: var(--accent2);">🔴 PROJECT 3 — ADVANCED INTERMEDIATE</div>
+        <h4>Kanban Task Board</h4>
+        <p>Build a full Trello-style board with drag-and-drop.</p>
+        <p><strong>Requirements:</strong></p>
+        <ol>
+          <li>Three columns: <strong>To Do</strong>, <strong>In Progress</strong>, <strong>Done</strong></li>
+          <li>Add cards with a title and optional description</li>
+          <li>Drag cards between columns using the HTML Drag and Drop API</li>
+          <li>Edit card titles in-place on double-click</li>
+          <li>Delete cards</li>
+          <li>Persist entire board state to LocalStorage</li>
+          <li>Show card count per column</li>
+        </ol>
+        <p><strong>Concepts used:</strong> Classes/OOP, DOM, Drag & Drop API, LocalStorage, Events, Closures</p>
+        <div class="hint">
+          <strong>Drag & Drop hint →</strong>
+<pre style="margin-top:8px;font-size:12px;color:var(--text-muted)">card.setAttribute("draggable", "true");
+card.addEventListener("dragstart", e => {
+  e.dataTransfer.setData("text/plain", card.id);
+});
+
+column.addEventListener("dragover", e => e.preventDefault());
+column.addEventListener("drop", e => {
+  const id = e.dataTransfer.getData("text/plain");
+  const card = document.getElementById(id);
+  column.querySelector(".card-list").appendChild(card);
+  saveBoard(); // persist to localStorage
+});</pre>
+        </div>
+      </div>
+
+      <!-- WHAT'S NEXT -->
+      <h3>What to Learn Next</h3>
+      <p>You've completed the beginner-to-intermediate JavaScript journey. Here's a roadmap for where to go from here:</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="concept-icon">⚛️</div>
+          <h4>React / Vue / Svelte</h4>
+          <p>Component-based UI frameworks. React is the most in-demand.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🟢</div>
+          <h4>Node.js</h4>
+          <p>JavaScript on the server. Build APIs with Express or Fastify.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">📘</div>
+          <h4>TypeScript</h4>
+          <p>JavaScript with static types. Catches bugs before runtime.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🧪</div>
+          <h4>Testing</h4>
+          <p>Write tests with Vitest or Jest. TDD makes code more reliable.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🗄️</div>
+          <h4>Databases</h4>
+          <p>Learn SQL (PostgreSQL) or NoSQL (MongoDB) for data persistence.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🚀</div>
+          <h4>Performance</h4>
+          <p>Web Vitals, lazy loading, caching, code splitting, and the V8 engine.</p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">🏁</span>
+        <div class="callout-body">
+          <strong>You made it!</strong>
+          <p>The single best thing you can do now is <em>build projects</em>. Each real project teaches you more than ten tutorials. Start small, ship often, read the errors carefully, and enjoy the process.</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end .content -->
+</main>
+
+<button id="back-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Sidebar active link + scroll progress
+  const sections = document.querySelectorAll('section.chapter, header');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const progressBar = document.getElementById('scroll-progress');
+  const backTop = document.getElementById('back-top');
+
+  function updateNav() {
+    const scrollY = window.scrollY;
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docH > 0 ? scrollY / docH : 0;
+    progressBar.style.transform = `scaleX(${progress})`;
+    backTop.classList.toggle('visible', scrollY > 400);
+
+    let current = '';
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop - 120) current = sec.id;
+    });
+
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').slice(1);
+      link.classList.toggle('active', href === current);
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  // Hamburger
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburger');
+  const overlay = document.getElementById('overlay');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  });
+
+  // Close sidebar on nav click (mobile)
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('visible');
+    });
+  });
+
+  // Animate chapters on scroll
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+    }),
+    { threshold: 0.05 }
+  );
+
+  document.querySelectorAll('.chapter').forEach(ch => {
+    ch.style.animationPlayState = 'paused';
+    observer.observe(ch);
+  });
+</script>
+</body>
+</html>
